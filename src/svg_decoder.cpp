@@ -66,14 +66,14 @@ std::string SVGDecoder::generateGradient(const Path& path, int path_index) {
 	oss << ">\n";
 	if (path.fill_type == 2) {
 		oss << "\t\t\t<stop offset=\"0\" stop-color=\"" << path.fill_color.hex() << "\" />\n";
-		for (int i = 0; i < path.gradient_control_point_count; ++i) {
+		for (int i = 0; i < path.gradient_control_point_count(); ++i) {
 			const auto& cp = path.gradient_control_points[i];
 			oss << "\t\t\t<stop offset=\"" << std::fixed << std::setprecision(3) << cp.position / 256.0 << "\" stop-color=\"" << cp.color.hex() << "\" />\n";
 		}
 		oss << "\t\t\t<stop offset=\"1\" stop-color=\"" << path.grad_color.hex() << "\" />\n";
 	} else if (path.fill_type == 3) {
 		oss << "\t\t\t<stop offset=\"0\" stop-color=\"" << path.fill_color.hex() << "\" />\n";
-		for (int i = 0; i < path.gradient_control_point_count; ++i) {
+		for (int i = 0; i < path.gradient_control_point_count(); ++i) {
 			const auto& cp = path.gradient_control_points[i];
 			oss << "\t\t\t<stop offset=\"" << std::fixed << std::setprecision(3) << cp.position / 256.0 / 2 << "\" stop-color=\"" << cp.color.hex() << "\" />\n";
 		}
@@ -85,7 +85,7 @@ std::string SVGDecoder::generateGradient(const Path& path, int path_index) {
 		oss << "\t\t\t<stop offset=\"1\" stop-color=\"" << path.fill_color.hex() << "\" />\n";
 	} else if (path.fill_type == 4) {
 		oss << "\t\t\t<stop offset=\"0\" stop-color=\"" << path.fill_color.hex() << "\" />\n";
-		for (int i = 0; i < path.gradient_control_point_count; ++i) {
+		for (int i = 0; i < path.gradient_control_point_count(); ++i) {
 			const auto& cp = path.gradient_control_points[i];
 			oss << "\t\t\t<stop offset=\"" << std::fixed << std::setprecision(3) << cp.position / 256.0 << "\" stop-color=\"" << cp.color.hex() << "\" />\n";
 		}
@@ -142,7 +142,7 @@ std::string SVGDecoder::generatePathD(const Path& path) {
 		oss << "M " << (first_anchor.x / 20) << " " << (first_anchor.y / 20) << " ";
 		lround = false;
 	}
-	for (int i = 1; i <= path.line_count; ++i) {
+	for (int i = 1; i <= path.line_count(); ++i) {
 		const auto& anchor = path.anchors[i];
 		if (anchor.round_corner) {
 			if (lround) {
@@ -150,7 +150,7 @@ std::string SVGDecoder::generatePathD(const Path& path) {
 			} else {
 				oss << "Q " << (anchor.x / 20) << " " << (anchor.y / 20) << " ";
 			}
-			const auto& next_anchor = path.anchors[i < path.line_count ? i + 1 : 0];
+			const auto& next_anchor = path.anchors[i < path.line_count() ? i + 1 : 0];
 			if (next_anchor.round_corner) {
 				oss << ((anchor.x + next_anchor.x) / 40) << " " << ((anchor.y + next_anchor.y) / 40) << " ";
 			} else {
