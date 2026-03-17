@@ -9,7 +9,7 @@ int main(int argc, char* argv[]) {
 		std::cerr << "Usage: pdr2svg <input.pdr> <output.svg>" << std::endl;
 		return 1;
 	}
-	
+
 	const std::string input_filepath = argv[1];
 	const std::string output_filepath = argv[2];
 
@@ -19,11 +19,14 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 	PDR pdr = std::move(parse_r.value());
-	SVGDecoder decoder;
-	if (!decoder.decodeSVG(pdr, output_filepath)) {
-		std::cerr << "Failed to export SVG file." << std::endl;
+
+	const std::string svg_content = pdr2svg::render(pdr);
+	std::ofstream file(output_filepath);
+	if (!file.is_open()) {
+		std::cerr << "Failed to open output file: " << output_filepath << std::endl;
 		return 1;
 	}
+	file << svg_content;
 
 	std::cout << "Successfully exported SVG file: " << output_filepath << std::endl;
 	return 0;
