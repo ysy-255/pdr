@@ -1,5 +1,5 @@
 #include "pdr/pdr.hpp"
-#include "pdr/svg_decoder.hpp"
+#include "pdr/pdr2svg.hpp"
 #include <iostream>
 
 using namespace pdr;

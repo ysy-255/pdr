@@ -1,6 +1,6 @@
 add_library(pdr
 	pdr.cpp
-	svg_decoder.cpp
+	pdr2svg.cpp
 )
 
 target_include_directories(pdr
