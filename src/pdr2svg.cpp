@@ -218,19 +218,19 @@ std::string generate_path_d(const Path& path) {
 
 std::string generate_path(const Path& path, int path_index) {
 	std::ostringstream oss;
-	oss << "\t<path d=\"" << generate_path_d(path) << "\" ";
+	oss << "\t<path ";
+	if (path.fill_type == 0 || !path.closed_path) {
+		oss << "fill=\"none\" ";
+	} else if (path.fill_type == 1) {
+		oss << "fill=\"#" << path.fill_color.hex() << "\" ";
+	} else if (path.fill_type > 1) {
+		oss << "fill=\"url(#gradient_" << path_index << ")\" ";
+	}
 	if (path.show_stroke || path.fill_type == 0 || !path.closed_path) {
 		oss << "stroke=\"#" << path.stroke_color.hex() << "\" "
 			<< "stroke-width=\"" << div20_str(path.line_width) << "\" ";
 	}
-	if (path.fill_type == 0 || !path.closed_path) {
-		oss << "fill=\"none\"";
-	} else if (path.fill_type == 1) {
-		oss << "fill=\"#" << path.fill_color.hex() << "\"";
-	} else if (path.fill_type > 1) {
-		oss << "fill=\"url(#gradient_" << path_index << ")\"";
-	}
-	oss << "/>\n";
+	oss << "d=\"" << generate_path_d(path) << "\"/>\n";
 	return oss.str();
 }
 
