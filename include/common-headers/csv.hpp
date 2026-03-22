@@ -13,6 +13,7 @@ public:
 	}
 
 	inline std::vector<std::string> & operator[](const size_t h){ return data[h]; }
+	inline const std::vector<std::string> & operator[](const size_t h) const{ return data[h]; }
 	size_t size() const{ return data.size(); }
 	auto begin(){ return data.begin(); }
 	auto end(){ return data.end(); }
@@ -25,7 +26,7 @@ public:
 
 	enum class Warn{
 		NONE,
-		UNEXPECT_AFTER_DQUOTE, // ""で囲まれたフィールドの次がCRLFや,でない文字だった
+		UNEXPECT_AFTER_DQUOTE, // ""で囲まれたフィールドの次が[CRLFまたは,]文字だった
 		UNCLOSED_DQUOTE // "が閉じられずにデータの終端に達した
 	} warn;
 
@@ -189,8 +190,8 @@ private:
 		while(reader.now + 1 < reader.end){
 			u8 nextc = *(reader.now + 1);
 			if(
-				*reader.now == '\r' && nextc == '\n' ||
-				*reader.now == '\n' && nextc == '\r'
+				(*reader.now == '\r' && nextc == '\n') ||
+				(*reader.now == '\n' && nextc == '\r')
 			) reader.now ++;
 			if(reader.now + 1 < reader.end){
 				u8 nextc = *(reader.now + 1);
