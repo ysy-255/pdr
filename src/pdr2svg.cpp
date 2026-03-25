@@ -87,7 +87,7 @@ std::string generate_header(const PDR& pdr) {
 	oss << "<svg xmlns=\"http://www.w3.org/2000/svg\" ";
 	oss << "width=\"" << pdr.width << "\" ";
 	oss << "height=\"" << pdr.height << "\" ";
-	oss << "viewBox=\"0 0 " << pdr.width << " " << pdr.height << "\">\n";
+	oss << "viewBox=\"0 0 " << pdr.width << ' ' << pdr.height << "\">\n";
 	return oss.str();
 }
 
@@ -95,10 +95,6 @@ std::string generate_gradient(const Path& path, size_t path_index) {
 	std::ostringstream oss;
 	const bool linear = path.fill_type < 4;
 	const bool mirror = path.fill_type == 3;
-	
-	oss << "\t\t<" << (linear ? "linear" : "radial") << "Gradient "
-		<< "id=\"gradient_" << path_index << "\" "
-		<< "gradientUnits=\"userSpaceOnUse\" ";
 
 	const float gwidth = path.grad_width * 16384;
 	const float gheight = path.grad_height * 16384;
@@ -106,10 +102,13 @@ std::string generate_gradient(const Path& path, size_t path_index) {
 	const int32_t& gy = path.grad_center_y;
 	const float& gangle = path.grad_angle;
 
+	oss << "\t\t<" << (linear ? "linear" : "radial") << "Gradient ";
+	oss << "id=\"gradient_" << path_index << "\" ";
+	oss << "gradientUnits=\"userSpaceOnUse\" ";
 	if (linear) {
-		oss << "x1=\"" << div20_str(gx - gwidth) << "\" "
-			<< "x2=\"" << div20_str(gx + gheight) << "\" "
-			<< "gradientTransform=\""
+		oss << "x1=\"" << div20_str(gx - gwidth) << "\" ";
+		oss << "x2=\"" << div20_str(gx + gheight) << "\" ";
+		oss << "gradientTransform=\""
 			<< "rotate(" << decimal2(gangle) << ' ' << div20_str(gx) << ' ' << div20_str(gy) << ")\"";
 	} else {
 		oss << "cx=\"0\" ";
@@ -155,7 +154,13 @@ std::string generate_gradient(const Path& path, size_t path_index) {
 	}
 
 	for (const auto & gcp : gcp_arr) {
-		oss << "\t\t\t<stop offset=\"" << decimal3(gcp.offset) << "\" stop-color=\"#" << gcp.color.hex() << "\" />\n";
+		oss << "\t\t\t<stop ";
+		oss << "offset=\"" << decimal3(gcp.offset) << "\" ";
+		oss << "stop-color=\"#" << gcp.color.rgbhex() << "\" ";
+		if (gcp.color.a != 0xFF) {
+			oss << "stop-opacity=\"" << decimal3(double(gcp.color.a) / 255) << "\" ";
+		}
+		oss << "/>\n";
 	}
 
 	oss << "\t\t</" << (linear ? "linear" : "radial") << "Gradient>\n";
@@ -222,22 +227,34 @@ std::string generate_path(const Path& path, int path_index) {
 	if (path.fill_type == 0 || !path.closed_path) {
 		oss << "fill=\"none\" ";
 	} else if (path.fill_type == 1) {
-		oss << "fill=\"#" << path.fill_color.hex() << "\" ";
+		oss << "fill=\"#" << path.fill_color.rgbhex() << "\" ";
+		if (path.fill_color.a != 255) {
+			oss << "fill-opacity=\"" << decimal3(double(path.fill_color.a) / 255) << "\" ";
+		}
 	} else if (path.fill_type > 1) {
 		oss << "fill=\"url(#gradient_" << path_index << ")\" ";
 	}
 	if (path.show_stroke || path.fill_type == 0 || !path.closed_path) {
-		oss << "stroke=\"#" << path.stroke_color.hex() << "\" "
-			<< "stroke-width=\"" << div20_str(path.line_width) << "\" ";
+		oss << "stroke=\"#" << path.stroke_color.rgbhex() << "\" ";
+		if (path.stroke_color.a != 255) {
+			oss << "stroke-opacity=\"" << decimal3(double(path.stroke_color.a) / 255) << "\" ";
+		}
+		oss << "stroke-width=\"" << div20_str(path.line_width) << "\" ";
 	}
-	oss << "d=\"" << generate_path_d(path) << "\"/>\n";
+	oss << "d=\"" << generate_path_d(path) << "\" ";
+	oss << "/>\n";
 	return oss.str();
 }
 
 std::string render(const pdr::PDR& pdr) {
 	std::ostringstream oss;
 	oss << generate_header(pdr);
-	oss << "\t<rect width=\"" << pdr.width << "\" height=\"" << pdr.height << "\" fill=\"#" << pdr.bg_color.hex() << "\" />\n";
+	oss << "\t<rect ";
+	oss << "width=\"" << pdr.width << "\" ";
+	oss << "height=\"" << pdr.height << "\" ";
+	oss << "fill=\"#" << pdr.bg_color.rgbhex() << "\" ";
+	oss << "/>\n";
+
 	oss << "\t<defs>\n";
 	for (size_t i = 0; i < pdr.paths.size(); ++i) {
 		const Path& path = pdr.paths[i];
