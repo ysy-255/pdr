@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="500" viewBox="0 0 400 500">
+	<rect width="400" height="500" fill="#E0F0B0" />
+	<defs>
+	</defs>
+	<path fill="none" stroke="#000000" stroke-width="1" d="M20 20L60 20L40 40" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M120 20Q160 20 140 40" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M220 20L260 20L240 40L260 40" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M320 20L360 20Q340 40 360 40" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M220 70Q260 70 240 90L260 90" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M320 70Q360 70 350 80T360 90" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M20 120L60 120L40 140L20 120Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M120 120Q160 120 140 140L120 120Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M220 120L260 120L240 140L260 140L220 120Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M320 120L360 120Q340 140 360 140L320 120Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M220 170Q260 170 240 190L260 190L220 170Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M320 170Q360 170 350 180T360 190L320 170Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M20 220L60 220Q40 240 20 220Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M120 220Q160 220 150 230T120 220Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M220 220L260 220L240 240Q260 240 220 220Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M320 220L360 220Q340 240 350 240T320 220Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M220 270Q260 270 240 290Q260 290 220 270Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M320 270Q360 270 350 280T350 290T320 270Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M60 320L60 320L40 340Q20 320 60 320Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M140 320Q160 320 140 340Q120 320 140 320Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M260 320L260 320L240 340L260 340Q220 320 260 320Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M360 320L360 320Q340 340 360 340Q320 320 360 320Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M240 370Q260 370 240 390L260 390Q220 370 240 370Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M340 370Q360 370 350 380T360 390Q320 370 340 370Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M60 420L60 420Q40 440 30 430T60 420Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M140 420Q160 420 150 430T130 430T140 420Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M260 420L260 420L240 440Q260 440 240 430T260 420Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M360 420L360 420Q340 440 350 440T340 430T360 420Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M240 470Q260 470 240 490Q260 490 240 480T240 470Z" />
+	<path fill="none" stroke="#000000" stroke-width="1" d="M340 470Q360 470 350 480T350 490T340 480T340 470Z" />
+</svg>
