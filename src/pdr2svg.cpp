@@ -25,6 +25,13 @@ std::string div20_str(const int32_t num) {
 std::string div20_str(const double& num) {
 	return div20_str(static_cast<int32_t>(std::round(num)));
 }
+std::string div20_point_str(const Anchor& p) {
+	return div20_str(p.x) + ' ' + div20_str(p.y);
+}
+std::string div20_point_mid_str(const Anchor& p1, const Anchor& p2) {
+	int32_t x = (p1.x + p2.x) / 2, y = (p1.y + p2.y) / 2;
+	return div20_str(x) + ' ' + div20_str(y);
+}
 
 std::string div100_str(const int32_t num) {
 	std::string res;
@@ -170,48 +177,38 @@ std::string generate_gradient(const Path& path, size_t path_index) {
 std::string generate_path_d(const Path& path) {
 	std::ostringstream oss;
 	if (path.anchors.empty()) return "";
-	const auto& first = path.anchors[0];
 	if (path.anchors.size() == 1) {
-		oss << 'M' << div20_str(first.x) << ' ' << div20_str(first.y)
-			<< 'L' << div20_str(first.x) << ' ' << div20_str(first.y) << 'Z';
+		oss << 'M' << div20_point_str(path.anchors.front())
+			<< 'L' << div20_point_str(path.anchors.front())
+			<< 'Z';
 		return oss.str();
 	}
-	const auto& second = path.anchors[1];
-	bool lround;
-	if (path.closed_path && first.round_corner) {
-		if (second.round_corner) {
-			oss << 'M' << div20_str((first.x + second.x) / 2) << ' ' << div20_str((first.y + second.y) / 2);
-			lround = false;
-		} else {
-			oss << 'M' << div20_str(second.x) << ' ' << div20_str(second.y);
-			lround = true;
-		}
-	} else {
-		oss << 'M' << div20_str(first.x) << ' ' << div20_str(first.y);
-		lround = false;
-	}
-	const size_t& line_cnt = path.line_count();
-	size_t anchor_cnt = line_cnt + 1 + (path.closed_path ? 1 : 0);
-	for (size_t i = 1; i < anchor_cnt; ++i) {
-		const auto& present = path.anchors[i <= line_cnt ? i : i - line_cnt - 1];
+	const size_t anchor_cnt = path.line_count() + 1;
+	const size_t rep_cnt = anchor_cnt + (path.closed_path ? 1 : 0);
+	bool prev_round = false;
+	for (size_t i = 0; i < rep_cnt; ++i) {
+		const auto& present = path.anchors[i % anchor_cnt];
+		const auto& next = path.anchors[(i + 1) % anchor_cnt];
 		if (present.round_corner) {
-			if (lround) {
+			if (i == 0) {
+				oss << 'M';
+			} else if (prev_round) {
 				oss << 'T';
 			} else {
-				oss << 'Q' << div20_str(present.x) << ' ' << div20_str(present.y) << ' ';
+				oss << 'Q' << div20_point_str(present) << ' ';
 			}
-			const auto& next = path.anchors[i < line_cnt ? i + 1 : i - line_cnt];
 			if (next.round_corner) {
-				oss << div20_str((present.x + next.x) / 2) << ' ' << div20_str((present.y + next.y) / 2);
+				oss << div20_point_mid_str(present, next);
 			} else {
-				oss << div20_str(next.x) << ' ' << div20_str(next.y);
+				oss << div20_point_str(next);
 			}
-			lround = true;
+			prev_round = i > 0;
 		} else {
-			if (!lround) {
-				oss << 'L' << div20_str(present.x) << ' ' << div20_str(present.y);
+			if (!prev_round) {
+				oss << (i == 0 ? 'M' : 'L');
+				oss << div20_point_str(present);
 			}
-			lround = false;
+			prev_round = false;
 		}
 	}
 	if (path.closed_path) {
