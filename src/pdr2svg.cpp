@@ -121,39 +121,38 @@ std::string generate_gradient(const Path& path, size_t path_index) {
 	}
 	oss << ">\n";
 
-	struct GCP{
+	struct GCP_tmp{
 		float offset; // 0~1
 		RGBA color;
 	};
 
-	size_t gcp_count = path.gradient_control_point_count();
-	size_t gcp_arr_size = gcp_count + 2;
-	if (mirror) gcp_arr_size = gcp_arr_size * 2 - 1;
-	std::vector<GCP> gcp_arr(gcp_arr_size);
-	gcp_arr.front().offset = 0;
-	gcp_arr.front().color = path.fill_color;
-	gcp_arr.back().offset = 1;
-	gcp_arr.back().color = (mirror ? path.fill_color : path.grad_color);
-	if (mirror) {
-		gcp_arr[gcp_count + 1].offset = 0.5;
-		gcp_arr[gcp_count + 1].color = path.grad_color;
+	const auto& pdr_gcp = path.gradient_control_points;
+	std::vector<GCP_tmp> svg_gcp;
+	{
+		size_t gcp_count = path.gradient_control_point_count();
+		size_t gcp_arr_size = gcp_count + 2;
+		if (mirror) gcp_arr_size = gcp_arr_size * 2 - 1;
+		svg_gcp.reserve(gcp_arr_size);
 	}
-	const int32_t position_divider = (mirror ? 512 : 256);
-	for (size_t i = 0; i < gcp_count; ++i) {
-		const auto & gcp = path.gradient_control_points[i];
-		auto & target = gcp_arr[i + 1];
-		target.offset = gcp.position;
-		target.offset /= position_divider;
-		target.color = gcp.color;
-		if (mirror) {
-			target = gcp_arr[gcp_arr_size - 2 - i];
-			target.offset = 512 - gcp.position;
-			target.offset /= position_divider;
-			target.color = gcp.color;
+	if (mirror) {
+		svg_gcp.emplace_back(0, path.fill_color);
+		for (auto it = pdr_gcp.cbegin(); it != pdr_gcp.cend(); ++it) {
+			svg_gcp.emplace_back(it->position / 512.0, it->color);
 		}
+		svg_gcp.emplace_back(0.5, path.grad_color);
+		for (auto it = pdr_gcp.crbegin(); it != pdr_gcp.crend(); ++it) {
+			svg_gcp.emplace_back(1 - it->position / 512.0, it->color);
+		}
+		svg_gcp.emplace_back(1, path.fill_color);
+	} else {
+		svg_gcp.emplace_back(0, path.fill_color);
+		for (auto it = pdr_gcp.cbegin(); it != pdr_gcp.cend(); ++it) {
+			svg_gcp.emplace_back(it->position / 256.0, it->color);
+		}
+		svg_gcp.emplace_back(1, path.grad_color);
 	}
 
-	for (const auto & gcp : gcp_arr) {
+	for (const auto & gcp : svg_gcp) {
 		oss << "\t\t\t<stop ";
 		oss << "offset=\"" << decimal3(gcp.offset) << "\" ";
 		oss << "stop-color=\"#" << gcp.color.rgbhex() << "\" ";
