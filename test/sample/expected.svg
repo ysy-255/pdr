@@ -1,53 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" width="256" height="256" viewBox="0 0 256 256">
-	<rect width="256" height="256" fill="#26E9D8FF" />
+	<rect width="256" height="256" fill="#26E9D8" />
 	<defs>
-		<radialGradient id="gradient_0" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="scale(50.1508 50.1508) translate(2.66097 2.25221) rotate(-349.749)">
-			<stop offset="0" stop-color="#FF9999FF" />
-			<stop offset="0.668" stop-color="#FF4D4DFF" />
-			<stop offset="1" stop-color="#FF0000FF" />
+		<radialGradient id="gradient_0" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="translate(133.45 112.95) scale(50.15 50.15) rotate(-349.75)">
+			<stop offset="0" stop-color="#FF9999" />
+			<stop offset="0.668" stop-color="#FF4D4D" />
+			<stop offset="1" stop-color="#FF0000" />
 		</radialGradient>
-		<radialGradient id="gradient_1" gradientUnits="userSpaceOnUse" cx="0" cy="0" r="1" gradientTransform="scale(36 36) translate(4.83333 2.13889) rotate(0)">
-			<stop offset="0" stop-color="#FF9999FF" />
-			<stop offset="1" stop-color="#FF0000FF" />
-		</radialGradient>
-		<linearGradient id="gradient_2" gradientUnits="userSpaceOnUse" x1="52.725" x2="107.275" gradientTransform="rotate(270 80 220.35)">
-			<stop offset="0" stop-color="#FF0000FF" />
-			<stop offset="0.207" stop-color="#FFFF9BFF" />
-			<stop offset="0.297" stop-color="#FF0000C8" />
-			<stop offset="0.668" stop-color="#FFFF9BA6" />
-			<stop offset="1" stop-color="#FF0000FF" />
+		<linearGradient id="gradient_2" gradientUnits="userSpaceOnUse" x1="52.75" x2="107.3" gradientTransform="rotate(270 80 220.35)">
+			<stop offset="0" stop-color="#FF0000" />
+			<stop offset="0.207" stop-color="#FFFF9B" />
+			<stop offset="0.297" stop-color="#FF0000" stop-opacity="0.784" />
+			<stop offset="0.668" stop-color="#FFFF9B" stop-opacity="0.651" />
+			<stop offset="1" stop-color="#FF0000" />
 		</linearGradient>
 		<linearGradient id="gradient_3" gradientUnits="userSpaceOnUse" x1="59.7" x2="91.5" gradientTransform="rotate(270 75.6 217.6)">
-			<stop offset="0" stop-color="#FFFF99FF" />
-			<stop offset="0.5" stop-color="#FF0000FF" />
-			<stop offset="1" stop-color="#FFFF99FF" />
+			<stop offset="0" stop-color="#FFFF99" />
+			<stop offset="0.5" stop-color="#FF0000" />
+			<stop offset="1" stop-color="#FFFF99" />
 		</linearGradient>
-		<linearGradient id="gradient_4" gradientUnits="userSpaceOnUse" x1="125.907" x2="171.293" gradientTransform="rotate(270 148.6 223.85)">
-			<stop offset="0" stop-color="#FFFF99FF" />
-			<stop offset="0.5" stop-color="#FF0000FF" />
-			<stop offset="1" stop-color="#FFFF99FF" />
+		<linearGradient id="gradient_4" gradientUnits="userSpaceOnUse" x1="125.9" x2="171.3" gradientTransform="rotate(270 148.6 223.85)">
+			<stop offset="0" stop-color="#FFFF99" />
+			<stop offset="0.5" stop-color="#FF0000" />
+			<stop offset="1" stop-color="#FFFF99" />
 		</linearGradient>
 		<linearGradient id="gradient_5" gradientUnits="userSpaceOnUse" x1="138.45" x2="189.55" gradientTransform="rotate(270 164 232.55)">
-			<stop offset="0" stop-color="#FFFF99FF" />
-			<stop offset="0.5" stop-color="#FF0000FF" />
-			<stop offset="1" stop-color="#FFFF99FF" />
+			<stop offset="0" stop-color="#FFFF99" />
+			<stop offset="0.5" stop-color="#FF0000" />
+			<stop offset="1" stop-color="#FFFF99" />
 		</linearGradient>
-		<linearGradient id="gradient_6" gradientUnits="userSpaceOnUse" x1="196.927" x2="248.873" gradientTransform="rotate(270 222.9 222.55)">
-			<stop offset="0" stop-color="#FFFF99FF" />
-			<stop offset="1" stop-color="#FF0000FF" />
+		<linearGradient id="gradient_6" gradientUnits="userSpaceOnUse" x1="196.95" x2="248.85" gradientTransform="rotate(270 222.9 222.55)">
+			<stop offset="0" stop-color="#FFFF99" />
+			<stop offset="1" stop-color="#FF0000" />
 		</linearGradient>
 		<linearGradient id="gradient_7" gradientUnits="userSpaceOnUse" x1="202.3" x2="260.7" gradientTransform="rotate(270 231.5 226.25)">
-			<stop offset="0" stop-color="#FFFF99FF" />
-			<stop offset="1" stop-color="#FF0000FF" />
+			<stop offset="0" stop-color="#FFFF99" />
+			<stop offset="1" stop-color="#FF0000" />
 		</linearGradient>
 	</defs>
-	<path d="M 176 83 Q 197 103 197 131 T 176 180 T 126 201 T 76 180 T 55 131 T 76 83 T 126 62 T 176 83Z" stroke="#000000FF" stroke-width="8" fill="url(#gradient_0)"/>
-	<path d="M 138 110 Q 156 67 189 63 " stroke="#000000FF" stroke-width="10" fill="none"/>
-	<path d="M 67 246 Q 77 244 82 241 T 89 232 T 92 219 L 92 196 L 99 196 L 99 219 Q 99 229 96 235 T 87 246 T 70 253 L 67 246Z" stroke="none" fill="url(#gradient_2)"/>
-	<path d="M 66 230 L 59 230 L 59 197 L 66 197 L 66 230Z" stroke="none" fill="url(#gradient_3)"/>
-	<path d="M 146 216 Q 136 210 124 204 L 127 197 Q 139 203 150 210 L 146 216Z" stroke="none" fill="url(#gradient_4)"/>
-	<path d="M 125 243 Q 137 241 145 237 T 159 225 T 170 206 L 177 211 Q 172 222 165 230 T 149 243 T 127 250 L 125 243Z" stroke="none" fill="url(#gradient_5)"/>
-	<path d="M 247 189 Q 251 197 253 203 L 248 205 Q 244 197 242 192 L 247 189Z" stroke="none" fill="url(#gradient_6)"/>
-	<path d="M 239 192 Q 243 200 245 205 L 240 207 L 240 204 L 240 252 L 232 252 L 232 247 L 191 247 L 191 240 L 232 240 L 232 209 L 193 209 L 193 202 L 238 202 Q 236 198 234 195 L 239 192Z" stroke="none" fill="url(#gradient_7)"/>
+	<path fill="url(#gradient_0)" stroke="#000000" stroke-width="8" d="M176.3 83.15Q197 103.4 197 131.95T176.3 180.75T126.45 201T76.6 180.75T55.9 131.95T76.6 83.15T126.45 62.9T176.3 83.15Z" />
+	<path fill="none" stroke="#000000" stroke-width="10" d="M138 110Q156 67 189 63" />
+	<path fill="url(#gradient_2)" d="M67.75 246.5Q77.05 244.2 82.2 241.1T89.7 232.8T92.1 219.35L92.2 196.9L99.85 196.9L99.85 219.3Q99.85 229.15 96.9 235.7T87.6 246.45T70.45 253.2L67.75 246.5Z" />
+	<path fill="url(#gradient_3)" d="M66.75 230.2L59.05 230.2L59.05 197.35L66.75 197.35L66.75 230.2Z" />
+	<path fill="url(#gradient_4)" d="M146.2 216.65Q136.55 210.15 124.45 204.25L127.85 197.5Q139.8 203.65 150.3 210.75L146.2 216.65Z" />
+	<path fill="url(#gradient_5)" d="M125.45 243.9Q137.6 241.65 145.8 237.35T159.85 225.85T170.55 206.5L177.05 211.1Q172.45 222.65 165.85 230.55T149.95 243.45T127.35 250.95L125.45 243.9Z" />
+	<path fill="url(#gradient_6)" d="M247.5 189.5Q251.55 197.25 253.4 203L248.15 205Q244.85 197 242.05 192.2L247.5 189.5Z" />
+	<path fill="url(#gradient_7)" d="M239.8 192.3Q243.95 200.75 245.65 205.85L240.25 207.75L240.3 204.75L240.3 252.6L232.65 252.6L232.65 247.1L191.85 247.1L191.85 240.3L232.65 240.3L232.65 209.6L193.05 209.6L193.05 202.9L238.3 202.9Q236.3 198.6 234.25 195L239.8 192.3Z" />
 </svg>
