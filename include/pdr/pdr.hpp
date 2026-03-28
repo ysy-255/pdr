@@ -15,9 +15,9 @@ struct RGBA{
 	uint8_t g;
 	uint8_t b;
 	uint8_t a;
-	std::string hex() const {
-		char buf[9];
-		snprintf(buf, sizeof(buf), "%02X%02X%02X%02X", r, g, b, a);
+	std::string rgbhex() const {
+		char buf[7];
+		snprintf(buf, sizeof(buf), "%02X%02X%02X", r, g, b);
 		return std::string(buf);
 	}
 };

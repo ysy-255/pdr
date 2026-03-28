@@ -25,6 +25,13 @@ std::string div20_str(const int32_t num) {
 std::string div20_str(const double& num) {
 	return div20_str(static_cast<int32_t>(std::round(num)));
 }
+std::string div20_point_str(const Anchor& p) {
+	return div20_str(p.x) + ' ' + div20_str(p.y);
+}
+std::string div20_point_mid_str(const Anchor& p1, const Anchor& p2) {
+	int32_t x = (p1.x + p2.x) / 2, y = (p1.y + p2.y) / 2;
+	return div20_str(x) + ' ' + div20_str(y);
+}
 
 std::string div100_str(const int32_t num) {
 	std::string res;
@@ -87,7 +94,7 @@ std::string generate_header(const PDR& pdr) {
 	oss << "<svg xmlns=\"http://www.w3.org/2000/svg\" ";
 	oss << "width=\"" << pdr.width << "\" ";
 	oss << "height=\"" << pdr.height << "\" ";
-	oss << "viewBox=\"0 0 " << pdr.width << " " << pdr.height << "\">\n";
+	oss << "viewBox=\"0 0 " << pdr.width << ' ' << pdr.height << "\">\n";
 	return oss.str();
 }
 
@@ -95,10 +102,6 @@ std::string generate_gradient(const Path& path, size_t path_index) {
 	std::ostringstream oss;
 	const bool linear = path.fill_type < 4;
 	const bool mirror = path.fill_type == 3;
-	
-	oss << "\t\t<" << (linear ? "linear" : "radial") << "Gradient "
-		<< "id=\"gradient_" << path_index << "\" "
-		<< "gradientUnits=\"userSpaceOnUse\" ";
 
 	const float gwidth = path.grad_width * 16384;
 	const float gheight = path.grad_height * 16384;
@@ -106,10 +109,13 @@ std::string generate_gradient(const Path& path, size_t path_index) {
 	const int32_t& gy = path.grad_center_y;
 	const float& gangle = path.grad_angle;
 
+	oss << "\t\t<" << (linear ? "linear" : "radial") << "Gradient ";
+	oss << "id=\"gradient_" << path_index << "\" ";
+	oss << "gradientUnits=\"userSpaceOnUse\" ";
 	if (linear) {
-		oss << "x1=\"" << div20_str(gx - gwidth) << "\" "
-			<< "x2=\"" << div20_str(gx + gheight) << "\" "
-			<< "gradientTransform=\""
+		oss << "x1=\"" << div20_str(gx - gwidth) << "\" ";
+		oss << "x2=\"" << div20_str(gx + gheight) << "\" ";
+		oss << "gradientTransform=\""
 			<< "rotate(" << decimal2(gangle) << ' ' << div20_str(gx) << ' ' << div20_str(gy) << ")\"";
 	} else {
 		oss << "cx=\"0\" ";
@@ -122,40 +128,45 @@ std::string generate_gradient(const Path& path, size_t path_index) {
 	}
 	oss << ">\n";
 
-	struct GCP{
+	struct GCP_tmp{
 		float offset; // 0~1
 		RGBA color;
 	};
 
-	size_t gcp_count = path.gradient_control_point_count();
-	size_t gcp_arr_size = gcp_count + 2;
-	if (mirror) gcp_arr_size = gcp_arr_size * 2 - 1;
-	std::vector<GCP> gcp_arr(gcp_arr_size);
-	gcp_arr.front().offset = 0;
-	gcp_arr.front().color = path.fill_color;
-	gcp_arr.back().offset = 1;
-	gcp_arr.back().color = (mirror ? path.fill_color : path.grad_color);
-	if (mirror) {
-		gcp_arr[gcp_count + 1].offset = 0.5;
-		gcp_arr[gcp_count + 1].color = path.grad_color;
+	const auto& pdr_gcp = path.gradient_control_points;
+	std::vector<GCP_tmp> svg_gcp;
+	{
+		size_t gcp_count = path.gradient_control_point_count();
+		size_t gcp_arr_size = gcp_count + 2;
+		if (mirror) gcp_arr_size = gcp_arr_size * 2 - 1;
+		svg_gcp.reserve(gcp_arr_size);
 	}
-	const int32_t position_divider = (mirror ? 512 : 256);
-	for (size_t i = 0; i < gcp_count; ++i) {
-		const auto & gcp = path.gradient_control_points[i];
-		auto & target = gcp_arr[i + 1];
-		target.offset = gcp.position;
-		target.offset /= position_divider;
-		target.color = gcp.color;
-		if (mirror) {
-			target = gcp_arr[gcp_arr_size - 2 - i];
-			target.offset = 512 - gcp.position;
-			target.offset /= position_divider;
-			target.color = gcp.color;
+	if (mirror) {
+		svg_gcp.emplace_back(0, path.fill_color);
+		for (auto it = pdr_gcp.cbegin(); it != pdr_gcp.cend(); ++it) {
+			svg_gcp.emplace_back(it->position / 512.0, it->color);
 		}
+		svg_gcp.emplace_back(0.5, path.grad_color);
+		for (auto it = pdr_gcp.crbegin(); it != pdr_gcp.crend(); ++it) {
+			svg_gcp.emplace_back(1 - it->position / 512.0, it->color);
+		}
+		svg_gcp.emplace_back(1, path.fill_color);
+	} else {
+		svg_gcp.emplace_back(0, path.fill_color);
+		for (auto it = pdr_gcp.cbegin(); it != pdr_gcp.cend(); ++it) {
+			svg_gcp.emplace_back(it->position / 256.0, it->color);
+		}
+		svg_gcp.emplace_back(1, path.grad_color);
 	}
 
-	for (const auto & gcp : gcp_arr) {
-		oss << "\t\t\t<stop offset=\"" << decimal3(gcp.offset) << "\" stop-color=\"#" << gcp.color.hex() << "\" />\n";
+	for (const auto & gcp : svg_gcp) {
+		oss << "\t\t\t<stop ";
+		oss << "offset=\"" << decimal3(gcp.offset) << "\" ";
+		oss << "stop-color=\"#" << gcp.color.rgbhex() << "\" ";
+		if (gcp.color.a != 0xFF) {
+			oss << "stop-opacity=\"" << decimal3(double(gcp.color.a) / 255) << "\" ";
+		}
+		oss << "/>\n";
 	}
 
 	oss << "\t\t</" << (linear ? "linear" : "radial") << "Gradient>\n";
@@ -166,48 +177,38 @@ std::string generate_gradient(const Path& path, size_t path_index) {
 std::string generate_path_d(const Path& path) {
 	std::ostringstream oss;
 	if (path.anchors.empty()) return "";
-	const auto& first = path.anchors[0];
 	if (path.anchors.size() == 1) {
-		oss << 'M' << div20_str(first.x) << ' ' << div20_str(first.y)
-			<< 'L' << div20_str(first.x) << ' ' << div20_str(first.y) << 'Z';
+		oss << 'M' << div20_point_str(path.anchors.front())
+			<< 'L' << div20_point_str(path.anchors.front())
+			<< 'Z';
 		return oss.str();
 	}
-	const auto& second = path.anchors[1];
-	bool lround;
-	if (path.closed_path && first.round_corner) {
-		if (second.round_corner) {
-			oss << 'M' << div20_str((first.x + second.x) / 2) << ' ' << div20_str((first.y + second.y) / 2);
-			lround = false;
-		} else {
-			oss << 'M' << div20_str(second.x) << ' ' << div20_str(second.y);
-			lround = true;
-		}
-	} else {
-		oss << 'M' << div20_str(first.x) << ' ' << div20_str(first.y);
-		lround = false;
-	}
-	const size_t& line_cnt = path.line_count();
-	size_t anchor_cnt = line_cnt + 1 + (path.closed_path ? 1 : 0);
-	for (size_t i = 1; i < anchor_cnt; ++i) {
-		const auto& present = path.anchors[i <= line_cnt ? i : i - line_cnt - 1];
+	const size_t anchor_cnt = path.line_count() + 1;
+	const size_t rep_cnt = anchor_cnt + (path.closed_path ? 1 : 0);
+	bool prev_round = false;
+	for (size_t i = 0; i < rep_cnt; ++i) {
+		const auto& present = path.anchors[i % anchor_cnt];
+		const auto& next = path.anchors[(i + 1) % anchor_cnt];
 		if (present.round_corner) {
-			if (lround) {
+			if (i == 0) {
+				oss << 'M';
+			} else if (prev_round) {
 				oss << 'T';
 			} else {
-				oss << 'Q' << div20_str(present.x) << ' ' << div20_str(present.y) << ' ';
+				oss << 'Q' << div20_point_str(present) << ' ';
 			}
-			const auto& next = path.anchors[i < line_cnt ? i + 1 : i - line_cnt];
 			if (next.round_corner) {
-				oss << div20_str((present.x + next.x) / 2) << ' ' << div20_str((present.y + next.y) / 2);
+				oss << div20_point_mid_str(present, next);
 			} else {
-				oss << div20_str(next.x) << ' ' << div20_str(next.y);
+				oss << div20_point_str(next);
 			}
-			lround = true;
+			prev_round = i > 0;
 		} else {
-			if (!lround) {
-				oss << 'L' << div20_str(present.x) << ' ' << div20_str(present.y);
+			if (!prev_round) {
+				oss << (i == 0 ? 'M' : 'L');
+				oss << div20_point_str(present);
 			}
-			lround = false;
+			prev_round = false;
 		}
 	}
 	if (path.closed_path) {
@@ -218,18 +219,25 @@ std::string generate_path_d(const Path& path) {
 
 std::string generate_path(const Path& path, int path_index) {
 	std::ostringstream oss;
-	oss << "\t<path d=\"" << generate_path_d(path) << "\" ";
-	if (path.show_stroke || path.fill_type == 0 || !path.closed_path) {
-		oss << "stroke=\"#" << path.stroke_color.hex() << "\" "
-			<< "stroke-width=\"" << div20_str(path.line_width) << "\" ";
-	}
+	oss << "\t<path ";
 	if (path.fill_type == 0 || !path.closed_path) {
-		oss << "fill=\"none\"";
+		oss << "fill=\"none\" ";
 	} else if (path.fill_type == 1) {
-		oss << "fill=\"#" << path.fill_color.hex() << "\"";
+		oss << "fill=\"#" << path.fill_color.rgbhex() << "\" ";
+		if (path.fill_color.a != 255) {
+			oss << "fill-opacity=\"" << decimal3(double(path.fill_color.a) / 255) << "\" ";
+		}
 	} else if (path.fill_type > 1) {
-		oss << "fill=\"url(#gradient_" << path_index << ")\"";
+		oss << "fill=\"url(#gradient_" << path_index << ")\" ";
 	}
+	if (path.show_stroke || path.fill_type == 0 || !path.closed_path) {
+		oss << "stroke=\"#" << path.stroke_color.rgbhex() << "\" ";
+		if (path.stroke_color.a != 255) {
+			oss << "stroke-opacity=\"" << decimal3(double(path.stroke_color.a) / 255) << "\" ";
+		}
+		oss << "stroke-width=\"" << div20_str(path.line_width) << "\" ";
+	}
+	oss << "d=\"" << generate_path_d(path) << "\" ";
 	oss << "/>\n";
 	return oss.str();
 }
@@ -237,7 +245,12 @@ std::string generate_path(const Path& path, int path_index) {
 std::string render(const pdr::PDR& pdr) {
 	std::ostringstream oss;
 	oss << generate_header(pdr);
-	oss << "\t<rect width=\"" << pdr.width << "\" height=\"" << pdr.height << "\" fill=\"#" << pdr.bg_color.hex() << "\" />\n";
+	oss << "\t<rect ";
+	oss << "width=\"" << pdr.width << "\" ";
+	oss << "height=\"" << pdr.height << "\" ";
+	oss << "fill=\"#" << pdr.bg_color.rgbhex() << "\" ";
+	oss << "/>\n";
+
 	oss << "\t<defs>\n";
 	for (size_t i = 0; i < pdr.paths.size(); ++i) {
 		const Path& path = pdr.paths[i];
